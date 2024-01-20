@@ -1,0 +1,13 @@
+{
+  "debug": true,
+  "token": "github_pat_example",
+  "post": "java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar example.jar",
+  "destinationDirectory": "plugins",
+  "files": [
+    {
+      "repo": "example/example",
+      "filename": "example.jar",
+      "tag": "latest"
+    }
+  ]
+}
