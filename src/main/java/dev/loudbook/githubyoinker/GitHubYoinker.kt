@@ -5,7 +5,7 @@ import java.io.*
 import kotlin.system.exitProcess
 
 
-class GithubYoinker {
+class GitHubYoinker {
     private val instance = this
 
     var didDownload = false

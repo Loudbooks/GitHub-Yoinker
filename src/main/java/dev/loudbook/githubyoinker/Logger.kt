@@ -36,7 +36,7 @@ object Logger {
     }
 
     private fun buildLog(message: String): String {
-        return "[GithubYoinker] " + message + Color.RESET
+        return "[GitHubYoinker] " + message + Color.RESET
     }
 
     enum class Color(private val color: String) {

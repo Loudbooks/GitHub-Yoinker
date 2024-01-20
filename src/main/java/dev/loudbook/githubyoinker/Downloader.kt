@@ -13,7 +13,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-class Downloader(private val configuration: Configuration, private val githubPath: String, private val main: GithubYoinker, private val cache: Cache) {
+class Downloader(private val configuration: Configuration, private val githubPath: String, private val main: GitHubYoinker, private val cache: Cache) {
     private val client: HttpClient = HttpClient.newHttpClient()
     private val destination = configuration.getValue("destinationDirectory").asString
 
@@ -49,7 +49,8 @@ class Downloader(private val configuration: Configuration, private val githubPat
         }
 
         var fileName = jsonObject["filename"].asString
-        fileName = fileName.replace("\${TAG}", tag)
+        fileName = fileName.replace("\${TAGV}", tag)
+        fileName = fileName.replace("\${TAG}", tag.replace("v", ""))
 
         val validFiles = pullAvailableFiles(tag)
         var file: JsonObject? = null
@@ -84,12 +85,12 @@ class Downloader(private val configuration: Configuration, private val githubPat
     }
 
     private fun pullLatestReleaseTag(): String? {
-        val latest = getFromGithub("releases/latest").asJsonObject ?: return null
+        val latest = getFromGitHub("releases/latest").asJsonObject ?: return null
         return latest["tag_name"]?.asString
     }
 
     private fun pullAvailableFiles(tag: String): JsonArray {
-        val jsonArray = getFromGithub("releases").asJsonArray
+        val jsonArray = getFromGitHub("releases").asJsonArray
 
         for (jsonElement in jsonArray) {
             val tagName = jsonElement.asJsonObject["tag_name"] ?: continue
@@ -146,7 +147,7 @@ class Downloader(private val configuration: Configuration, private val githubPat
         }
     }
 
-    private fun getFromGithub(url: String): JsonElement {
+    private fun getFromGitHub(url: String): JsonElement {
         val request = HttpRequest.newBuilder()
             .uri(URI.create("https://api.github.com/repos/$githubPath/$url"))
             .header("Authorization", "Bearer ${configuration.getValue("token").asString}")

@@ -35,7 +35,8 @@ class Configuration {
                         Files.copy(it, Path.of("./yoinkerconfig.json"))
                     }
 
-                Logger.log("Copied default configuration file. Make sure you change it!")
+                Logger.log("Copied default configuration file.")
+                exitProcess(0)
             }
 
             configObject = gson.fromJson(FileReader(File("./yoinkerconfig.json")), JsonObject::class.java)

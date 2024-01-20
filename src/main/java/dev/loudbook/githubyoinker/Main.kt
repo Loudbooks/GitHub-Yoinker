@@ -5,7 +5,7 @@ import kotlinx.coroutines.runBlocking
 object Main {
     @JvmStatic
     fun main(args: Array<String>) = runBlocking {
-        val githubYoinker = GithubYoinker()
+        val githubYoinker = GitHubYoinker()
         githubYoinker.initiate()
     }
 }
