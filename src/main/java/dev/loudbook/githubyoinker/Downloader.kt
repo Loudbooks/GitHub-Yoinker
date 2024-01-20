@@ -26,6 +26,8 @@ class Downloader(private val configuration: Configuration, private val githubPat
             .filter { jsonElement: JsonElement -> jsonElement.asJsonObject["repo"].asString == githubPath }.findFirst()
             .orElse(null)
 
+        Logger.debug("Initiating pre download for $githubPath")
+
         if (element == null) {
             Logger.error("Element is null for $githubPath")
             return
@@ -125,14 +127,11 @@ class Downloader(private val configuration: Configuration, private val githubPat
             while ((inputStream.read(buffer).also { bytesRead = it }) != -1) {
                 fos.write(buffer, 0, bytesRead)
                 totalBytesRead += bytesRead.toDouble()
+                val percent = Math.round(totalBytesRead / size * 100).toInt()
 
-                if (configuration.getValue("debug").asBoolean) {
-                    val percent = Math.round(totalBytesRead / size * 100).toInt()
-
-                    if (percent % 5 == 0 && lastPrinted != percent) {
-                        Logger.log("$percent - $fileName [${Math.round(totalBytesRead/1000)}KB/${Math.round(size/1000)}KB]")
-                        lastPrinted = percent
-                    }
+                if (percent % 5 == 0 && lastPrinted != percent) {
+                    Logger.debug("$percent - $fileName [${Math.round(totalBytesRead/1000)}KB/${Math.round(size/1000)}KB]")
+                    lastPrinted = percent
                 }
             }
 

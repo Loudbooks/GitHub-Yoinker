@@ -9,6 +9,7 @@ import java.io.FileReader
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.system.exitProcess
 
 class Configuration {
     private var configObject: JsonObject? = null
@@ -26,7 +27,12 @@ class Configuration {
             if (!file.exists()) {
                 Main::class.java.getResourceAsStream("/yoinkerconfig.json")
                     .let {
-                        Files.copy(it!!, Path.of("./yoinkerconfig.json"))
+                        if (it == null) {
+                            Logger.error("Failed to load the default config. I'm broken. I need help.")
+                            exitProcess(0)
+                        }
+
+                        Files.copy(it, Path.of("./yoinkerconfig.json"))
                     }
 
                 Logger.log("Copied default configuration file. Make sure you change it!")
@@ -50,7 +56,11 @@ class Configuration {
             }
         }
 
-        return current!![keys[keys.size - 1]]
+        if (current == null || current[keys[keys.size - 1]] == null) {
+            throw java.lang.NullPointerException("Failed to retrieve config value $key")
+        }
+
+        return current[keys[keys.size - 1]]
     }
 
     val filesArray: JsonArray

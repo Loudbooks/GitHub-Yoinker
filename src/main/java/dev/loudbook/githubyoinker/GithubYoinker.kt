@@ -1,26 +1,47 @@
 package dev.loudbook.githubyoinker
 
+import kotlinx.coroutines.*
 import java.io.*
 import kotlin.system.exitProcess
 
 
 class GithubYoinker {
+    private val instance = this
+
     var didDownload = false
 
-    fun initiate() {
+    suspend fun initiate() {
         val configuration = Configuration()
         val cache = Cache()
 
         val array = configuration.getValue("files").asJsonArray
+        val path = configuration.getValue("destinationDirectory").asString
+        val debug = configuration.getValue("debug").asBoolean
 
-        for (jsonElement in array) {
-            Downloader(
-                configuration,
-                jsonElement.asJsonObject["repo"].asString,
-                this,
-                cache
-            )
+        Logger.debug = debug
+
+        val file = File(path)
+        file.mkdir()
+
+        val jobs = mutableListOf<Job>()
+
+        coroutineScope {
+            for (jsonElement in array) {
+                val job = async(Dispatchers.IO) {
+                    println(Thread.currentThread().name)
+                    Downloader(
+                        configuration,
+                        jsonElement.asJsonObject["repo"].asString,
+                        instance,
+                        cache
+                    )
+                }
+
+                jobs.add(job)
+            }
         }
+
+        jobs.joinAll()
 
         cache.saveCache()
 
@@ -29,16 +50,19 @@ class GithubYoinker {
         }
 
         val startup = configuration.getValue("post").asString
-
         val processBuilder = ProcessBuilder(startup.split(" "))
 
-        Logger.log("Starting server process...")
-        val process = processBuilder.start()
+        Logger.log("Starting post process...")
+        val process = withContext(Dispatchers.IO) {
+            processBuilder.start()
+        }
 
         handleConsoleOutput(process.inputStream)
         handleConsoleInput(process.outputStream)
 
-        process.waitFor()
+        withContext(Dispatchers.IO) {
+            process.waitFor()
+        }
 
         exitProcess(0)
     }

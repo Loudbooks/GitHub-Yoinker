@@ -7,6 +7,7 @@ import java.util.logging.Logger
 
 object Logger {
     private var logger: Logger = Logger.getGlobal()
+    var debug: Boolean = false
 
     init {
         System.setProperty("java.util.logging.SimpleFormatter.format",
@@ -30,6 +31,7 @@ object Logger {
     }
 
     fun debug(message: String) {
+        if (!debug) return
         logger.log(LogRecord(Level.INFO, buildLog(Color.BLUE.toString() + "[Debug] " + message)))
     }
 

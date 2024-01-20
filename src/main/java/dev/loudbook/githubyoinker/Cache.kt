@@ -19,7 +19,7 @@ class Cache {
     }
 
     fun saveCache() {
-        val file = getFile()
+        val file = getCache()
 
         val outputStream = ObjectOutputStream(FileOutputStream(file))
         outputStream.writeObject(versionMap)
@@ -28,7 +28,7 @@ class Cache {
     }
 
     private fun loadCache() {
-        val file = getFile()
+        val file = getCache()
 
         try {
             val inputStream = ObjectInputStream(FileInputStream(file))
@@ -40,7 +40,7 @@ class Cache {
         }
     }
 
-    private fun getFile(): File {
+    private fun getCache(): File {
         val file = File("./downloadcache")
         if (!file.exists()) {
             file.createNewFile()
