@@ -69,7 +69,7 @@ class Downloader(private val configuration: Configuration, private val githubPat
         val oldFile = File("./$destination/${cache.checkVersion(githubPath)}")
 
         if (cache.checkVersion(githubPath) == "$tag-$fileName" && oldFile.exists()) {
-            Logger.error("Skipping download for $githubPath")
+            Logger.log("Skipping download for $githubPath")
             return
         }
 
