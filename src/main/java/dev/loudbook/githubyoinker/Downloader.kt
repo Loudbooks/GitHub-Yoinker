@@ -74,7 +74,7 @@ class Downloader(private val configuration: Configuration, private val githubPat
         }
 
         if (oldFile.exists()) {
-            Logger.log("Deleting old version of $githubPath")
+            Logger.debug("Deleting old version of $githubPath")
             if (!oldFile.delete()) {
                 Logger.warning("Failed to delete old version of $githubPath")
             }
