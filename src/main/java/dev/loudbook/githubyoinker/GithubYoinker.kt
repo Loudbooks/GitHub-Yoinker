@@ -28,7 +28,6 @@ class GithubYoinker {
         coroutineScope {
             for (jsonElement in array) {
                 val job = async(Dispatchers.IO) {
-                    println(Thread.currentThread().name)
                     Downloader(
                         configuration,
                         jsonElement.asJsonObject["repo"].asString,

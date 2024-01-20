@@ -26,7 +26,7 @@ class Downloader(private val configuration: Configuration, private val githubPat
             .filter { jsonElement: JsonElement -> jsonElement.asJsonObject["repo"].asString == githubPath }.findFirst()
             .orElse(null)
 
-        Logger.debug("Initiating pre download for $githubPath")
+        Logger.debug("Initiating pre download for $githubPath. Running on thread ${Thread.currentThread().name}")
 
         if (element == null) {
             Logger.error("Element is null for $githubPath")
