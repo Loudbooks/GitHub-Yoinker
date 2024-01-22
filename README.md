@@ -1,6 +1,8 @@
 <div align="center">
 
 # GitHub Yoinker
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Loudbooks/Github-Yoinker/gradle.yml?style=for-the-badge)
+
 A program to easily download GitHub releases dynamically, written in Kotlin using parallel downloads.
 </div>
 
